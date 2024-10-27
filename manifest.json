@@ -2,7 +2,9 @@
     "name": "Keymapper",
     "version": "0.1.0",
     "description": "Custom Targeted Keybindings (Keyboard Shortcuts)",
-    "permissions": [],
+    "permissions": [
+        "storage"
+    ],
     "host_permissions": [
         "*"
     ],
@@ -11,6 +13,9 @@
             "matches": [
                 "http://*/*",
                 "https://*/*"
+            ],
+            "css": [
+                "butterup.css"
             ],
             "js": [
                 "contentScript.js"
