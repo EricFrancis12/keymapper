@@ -165,9 +165,10 @@
         }) {
             /* Check if the toaster exists. If it doesn't, create it. If it does, check if there are too many toasts on the screen.
             If there are too many, delete the oldest one and create a new one. If there aren't too many, create a new one. */
+            let toaster;
             if (document.getElementById("toaster") == null) {
                 // toaster doesn't exist, create it
-                const toaster = document.createElement("div");
+                toaster = document.createElement("div");
                 toaster.id = "toaster";
                 if (location == null) {
                     toaster.className = "toaster top-right";
@@ -186,7 +187,7 @@
                     toaster.appendChild(rack);
                 }
             } else {
-                const toaster = document.getElementById("toaster");
+                toaster = document.getElementById("toaster");
                 // check what location the toaster is in
                 toaster.classList.forEach(function (item) {
                     // remove any location classes from the toaster
@@ -205,7 +206,6 @@
                 } else {
                     toaster.className = "toaster " + location;
                 }
-                const rack = document.getElementById("butterupRack");
             }
 
             // Check if there are too many toasts on the screen
@@ -222,7 +222,6 @@
             toast.className = "butteruptoast";
             // if the toast class contains a top or bottom location, add the appropriate class to the toast
 
-            // TODO: refactor disconnected variables here
             if (toaster.className.includes("top-right")
                 || toaster.className.includes("top-center")
                 || toaster.className.includes("top-left")
@@ -270,19 +269,19 @@
                         toastIcon.innerHTML =
                             `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">` +
                             `<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />` +
-                            `</svg>`
+                            `</svg>`;
                     }
                     if (type == "warning") {
                         toastIcon.innerHTML =
                             `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">` +
                             `<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />` +
-                            `</svg>`
+                            `</svg>`;
                     }
                     if (type == "info") {
                         toastIcon.innerHTML =
                             `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">` +
                             `<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />` +
-                            `</svg>`
+                            `</svg>`;
                     }
                 }
             }
