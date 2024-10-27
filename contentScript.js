@@ -1,25 +1,12 @@
+// TODO: convert to typescript
+
 (function () {
     const MATCH_FIRST_MAPPING_ONLY = true;
     const TOAST_ON_MATCH = true;
 
     const TOGGLE_RUNNING_KEY = "r";
 
-    // TODO: extract MAPPINGS into an external customizable .json
-    const MAPPINGS = {
-        "mappings": [
-            {
-                "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test",
-                "key": {
-                    "char": "f",
-                    "shiftKey": true,
-                },
-                "action": {
-                    "type": "click",
-                    "selector": "#try_it > a"
-                }
-            }
-        ]
-    };
+    const KEY_MAPPINGS_JSON_FILE_PATH = "key_mappings.json";
 
     const smartRunner = {
         running: true,
@@ -46,11 +33,17 @@
 
     smartRunner.fetchSavedRunning();
 
-    document.addEventListener("keypress", e => {
+    document.addEventListener("keypress", async (e) => {
+        const { success, data } = await safeFetchJSONFile(KEY_MAPPINGS_JSON_FILE_PATH);
+        if (!success) {
+            return;
+        }
+
         if (e.key === TOGGLE_RUNNING_KEY) {
             const newRunning = !smartRunner.running;
             smartRunner.setRunning(newRunning);
 
+            // TODO: fix toast switching from left to right side when right is called, and vice-versa
             butterup.toast({
                 title: newRunning ? "Now Running ✅" : "Stopped 🛑",
                 message: newRunning ? "Keymapper is Now Running" : "Keymapper has been Stopped",
@@ -63,7 +56,7 @@
 
         if (!smartRunner.running) return;
 
-        for (const { url, key, action } of MAPPINGS.mappings) {
+        for (const { url, key, action } of data.mappings) {
             const urlRegex = new RegExp(url);
             if (!urlRegex.test(window.location.href)) continue;
 
@@ -87,6 +80,22 @@
             }
         }
     });
+
+    async function safeFetchJSONFile(fileName) {
+        try {
+            const res = await fetch(chrome.runtime.getURL(fileName));
+            const data = await res.json();
+            return {
+                success: true,
+                data,
+            };
+        } catch (err) {
+            console.error(err);
+            return {
+                success: false,
+            };
+        }
+    }
 
     function isMatchingKey(e, keyMapping) {
         if (e.shiftKey !== keyMapping.shiftKey) return false;
@@ -181,6 +190,8 @@
             butterup.options.currentToasts++;
             toast.className = "butteruptoast";
             // if the toast class contains a top or bottom location, add the appropriate class to the toast
+
+            // TODO: refactor disconnected variables here
             if (toaster.className.includes("top-right")
                 || toaster.className.includes("top-center")
                 || toaster.className.includes("top-left")

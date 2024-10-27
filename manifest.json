@@ -22,7 +22,17 @@
             ]
         }
     ],
-    "web_accessible_resources": [],
+    "web_accessible_resources": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "resources": [
+                "key_mappings.json"
+            ]
+        }
+    ],
     "action": {
         "default_icon": {
             "16": "assets/icon16.png",

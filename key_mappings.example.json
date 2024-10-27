@@ -1,0 +1,15 @@
+{
+    "mappings": [
+        {
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test",
+            "key": {
+                "char": "f",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "click",
+                "selector": "#try_it > a"
+            }
+        }
+    ]
+}
