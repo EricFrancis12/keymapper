@@ -68,7 +68,7 @@
             const { type, selector } = action;
             const element = document.querySelector(selector);
 
-            const { success, toast } = doElementAction(element, type);
+            const { success, toast } = await doElementAction(element, action);
 
             if (toast && TOAST_ON_MATCH) {
                 butterup.toast({
@@ -99,16 +99,139 @@
         }
     }
 
+    async function getCurrentTab() {
+        return new Promise((resolve) => {
+            chrome.runtime.sendMessage({ action: "getCurrentTabId" }, (tab) => {
+                if (tab?.id) {
+                    resolve(tab);
+                } else {
+                    reject(null);
+                }
+            });
+        });
+    }
+
+    async function removeCurrentTab() {
+        return new Promise((resolve) => {
+            chrome.runtime.sendMessage({ action: "removeTab" }, (resp) => {
+                resolve(resp.success);
+            });
+        })
+    }
+
+    function copyToClipboard(text) {
+        return new Promise((resolve, reject) => {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        resolve("Text copied to clipboard");
+                    })
+                    .catch(err => {
+                        reject("Failed to copy: " + err);
+                    });
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand("copy");
+                    resolve("Text copied to clipboard");
+                } catch (err) {
+                    reject("Failed to copy: " + err);
+                }
+                document.body.removeChild(textarea);
+            }
+        });
+    }
+
+    function getClipboardText() {
+        return new Promise((resolve, reject) => {
+            navigator.clipboard.readText()
+                .then(text => {
+                    resolve(text);
+                })
+                .catch(err => {
+                    reject("Failed to read clipboard contents: " + err);
+                });
+        });
+    }
+
     function isMatchingKey(e, keyMapping) {
         if (e.shiftKey !== keyMapping.shiftKey) return false;
         return e.key.toLowerCase() === keyMapping.char.toLowerCase();
     }
 
-    function doElementAction(element, actionType) {
-        switch (actionType) {
+    async function doElementAction(element, action) {
+        switch (action.type) {
             case "click":
                 if (element?.click) {
                     element.click();
+                    return {
+                        success: true,
+                        toast: true,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        toast: false,
+                    };
+                }
+            case "focus":
+                if (element?.focus) {
+                    element.focus();
+                    return {
+                        success: true,
+                        toast: true,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        toast: false,
+                    };
+                }
+            case "copy_text_content":
+                if (element?.textContent != null) {
+                    await copyToClipboard(element.textContent);
+                    return {
+                        success: true,
+                        toast: true,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        toast: false,
+                    };
+                }
+            case "copy_value":
+                if (element?.value != null) {
+                    await copyToClipboard(element.value);
+                    return {
+                        success: true,
+                        toast: true,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        toast: false,
+                    };
+                }
+            case "paste_value":
+                if (element?.value != null) {
+                    element.value = await getClipboardText();
+                    return {
+                        success: true,
+                        toast: true,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        toast: false,
+                    };
+                }
+            case "custom_js":
+                if (action.js) {
+                    eval(action.js);
                     return {
                         success: true,
                         toast: true,
@@ -127,6 +250,24 @@
                 };
             case "forward":
                 window.history.forward();
+                return {
+                    success: true,
+                    toast: false,
+                };
+            case "refresh":
+                location.reload();
+                return {
+                    success: true,
+                    toast: false,
+                };
+            case "refresh_no_cache":
+                location.reload(true);
+                return {
+                    success: true,
+                    toast: false,
+                };
+            case "close_tab":
+                await removeCurrentTab();
                 return {
                     success: true,
                     toast: false,

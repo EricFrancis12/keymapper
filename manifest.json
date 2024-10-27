@@ -3,11 +3,15 @@
     "version": "0.1.0",
     "description": "Custom Targeted Keybindings (Keyboard Shortcuts)",
     "permissions": [
-        "storage"
+        "storage",
+        "tabs"
     ],
     "host_permissions": [
         "*"
     ],
+    "background": {
+        "service_worker": "background.js"
+    },
     "content_scripts": [
         {
             "matches": [

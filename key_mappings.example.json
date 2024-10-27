@@ -12,10 +12,54 @@
             }
         },
         {
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test",
+            "key": {
+                "char": "e",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "focus",
+                "selector": "#top-nav-search-input"
+            }
+        },
+        {
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test",
+            "key": {
+                "char": "x",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "copy_text_content",
+                "selector": "#content > article > header > h1"
+            }
+        },
+        {
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test",
+            "key": {
+                "char": "c",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "copy_value",
+                "selector": "#content > article > header > h1"
+            }
+        },
+        {
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test",
+            "key": {
+                "char": "v",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "paste_value",
+                "selector": "#top-nav-search-input"
+            }
+        },
+        {
             "url": "",
             "key": {
                 "char": "a",
-                "shiftKey": true
+                "shiftKey": false
             },
             "action": {
                 "type": "back"
@@ -25,10 +69,40 @@
             "url": "",
             "key": {
                 "char": "d",
-                "shiftKey": true
+                "shiftKey": false
             },
             "action": {
                 "type": "forward"
+            }
+        },
+        {
+            "url": "",
+            "key": {
+                "char": "w",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "refresh"
+            }
+        },
+        {
+            "url": "",
+            "key": {
+                "char": "w",
+                "shiftKey": true
+            },
+            "action": {
+                "type": "refresh_no_cache"
+            }
+        },
+        {
+            "url": "",
+            "key": {
+                "char": "s",
+                "shiftKey": false
+            },
+            "action": {
+                "type": "close_tab"
             }
         }
     ]
