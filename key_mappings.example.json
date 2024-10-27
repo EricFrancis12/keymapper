@@ -10,6 +10,26 @@
                 "type": "click",
                 "selector": "#try_it > a"
             }
+        },
+        {
+            "url": "",
+            "key": {
+                "char": "a",
+                "shiftKey": true
+            },
+            "action": {
+                "type": "back"
+            }
+        },
+        {
+            "url": "",
+            "key": {
+                "char": "d",
+                "shiftKey": true
+            },
+            "action": {
+                "type": "forward"
+            }
         }
     ]
 }

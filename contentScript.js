@@ -4,7 +4,8 @@
     const MATCH_FIRST_MAPPING_ONLY = true;
     const TOAST_ON_MATCH = true;
 
-    const TOGGLE_RUNNING_KEY = "r";
+    const TOGGLE_RUNNING_CHAR = "~";
+    const TOGGLE_RUNNING_SHIFT_KEY = true;
 
     const KEY_MAPPINGS_JSON_FILE_PATH = "key_mappings.json";
 
@@ -33,20 +34,22 @@
 
     smartRunner.fetchSavedRunning();
 
-    document.addEventListener("keypress", async (e) => {
+    document.addEventListener("keyup", async (e) => {
         const { success, data } = await safeFetchJSONFile(KEY_MAPPINGS_JSON_FILE_PATH);
         if (!success) {
             return;
         }
 
-        if (e.key === TOGGLE_RUNNING_KEY) {
+        if ((!smartRunner.running && e.key === TOGGLE_RUNNING_CHAR && e.shiftKey === TOGGLE_RUNNING_SHIFT_KEY)
+            || (smartRunner.running && e.key === "Escape")
+        ) {
             const newRunning = !smartRunner.running;
             smartRunner.setRunning(newRunning);
 
             // TODO: fix toast switching from left to right side when right is called, and vice-versa
             butterup.toast({
-                title: newRunning ? "Now Running ✅" : "Stopped 🛑",
-                message: newRunning ? "Keymapper is Now Running" : "Keymapper has been Stopped",
+                title: newRunning ? "Keymapper is Now Running ✅" : "Keymapper has been Stopped 🛑",
+                message: newRunning ? "Press <b><u>ESC</u></b> to quit" : `Press <b><u>${TOGGLE_RUNNING_SHIFT_KEY ? "SHIFT</u></b> + <b><u>" : ""}${TOGGLE_RUNNING_CHAR}</u></b> to resume`,
                 location: "top-left",
                 dismissable: true,
             });
@@ -64,20 +67,19 @@
 
             const { type, selector } = action;
             const element = document.querySelector(selector);
-            if (element) {
-                doElementAction(element, type);
 
-                if (TOAST_ON_MATCH) {
-                    butterup.toast({
-                        title: `New action from key: "${key.char}"`,
-                        message: `Executed <b>"${type}"</b> action on selector <b>"${selector}</b>"`,
-                        location: "top-right",
-                        dismissable: true,
-                    });
-                }
+            const { success, toast } = doElementAction(element, type);
 
-                if (MATCH_FIRST_MAPPING_ONLY) break;
+            if (toast && TOAST_ON_MATCH) {
+                butterup.toast({
+                    title: `New action from key: "${key.char}"`,
+                    message: `Executed <b>"${type}"</b> action on selector <b>"${selector}</b>"`,
+                    location: "top-right",
+                    dismissable: true,
+                });
             }
+
+            if (success && MATCH_FIRST_MAPPING_ONLY) break;
         }
     });
 
@@ -104,7 +106,36 @@
 
     function doElementAction(element, actionType) {
         switch (actionType) {
-            case "click": element.click(); break;
+            case "click":
+                if (element?.click) {
+                    element.click();
+                    return {
+                        success: true,
+                        toast: true,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        toast: false,
+                    };
+                }
+            case "back":
+                window.history.back();
+                return {
+                    success: true,
+                    toast: false,
+                };
+            case "forward":
+                window.history.forward();
+                return {
+                    success: true,
+                    toast: false,
+                };
+            default:
+                return {
+                    success: false,
+                    toast: false,
+                };
         }
     }
 
