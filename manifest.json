@@ -1,0 +1,31 @@
+{
+    "name": "Keymapper",
+    "version": "0.1.0",
+    "description": "Custom Targeted Keybindings (Keyboard Shortcuts)",
+    "permissions": [],
+    "host_permissions": [
+        "*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "contentScript.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [],
+    "action": {
+        "default_icon": {
+            "16": "assets/icon16.png",
+            "24": "assets/icon48.png",
+            "32": "assets/icon128.png"
+        },
+        "default_title": "Keymapper",
+        "default_popup": "popup.html"
+    },
+    "manifest_version": 3
+}
